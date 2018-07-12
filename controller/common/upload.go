@@ -13,6 +13,7 @@ import (
 	"github.com/satori/go.uuid"
 	"github.com/xblymmx/huzhi123/model"
 	"net/http"
+	"github.com/xblymmx/huzhi123/constant"
 )
 
 type ImageUploadInfo struct {
@@ -69,12 +70,12 @@ func upload(ctx *gin.Context) (map[string]interface{}, error) {
 	index := strings.Index(filename, ".")
 
 	if index < 0 {
-		return nil, errors.New("invalid file name")
+		return nil, errors.New(constant.ErrorMsg.InvalidFileName)
 	}
 
 	ext := filename[index:]
 	if len(ext) < 1 {
-		return nil, errors.New("invalid extension name")
+		return nil, errors.New(constant.ErrorMsg.InvalidFileExtensionName)
 	}
 
 	mimeType := mime.TypeByExtension(ext)
@@ -85,7 +86,7 @@ func upload(ctx *gin.Context) (map[string]interface{}, error) {
 	}
 
 	if mimeType == "" {
-		return nil, errors.New("invalid mime type")
+		return nil, errors.New(constant.ErrorMsg.InvalidMimeType)
 	}
 
 	imageUploadInfo := GenerateImgUploadInfo(ext)
@@ -127,15 +128,15 @@ func upload(ctx *gin.Context) (map[string]interface{}, error) {
 func UploadHandler(ctx *gin.Context) {
 	data, err := upload(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": config.ErrorCode.ERROR,
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"code": constant.ErrorCode.ERROR,
 			"msg": err.Error(),
 			data: gin.H{},
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code": config.ErrorCode.SUCCESS,
+		"code": constant.ErrorCode.SUCCESS,
 		"msg": "success",
 		"data": data,
 	})

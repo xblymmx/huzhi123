@@ -3,20 +3,20 @@ package common
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"github.com/xblymmx/huzhi123/config"
+	"github.com/xblymmx/huzhi123/constant"
 )
 
 func SendErrJSON(msg string, args ...interface{}) {
-	if len(args) == 0 {
-		panic("missing gin.Context")
+	if len(args) != 1 || len(args) != 2 {
+		panic("args should be one or two")
 	}
 
 	var ctx *gin.Context
-	var errNo = config.ErrorCode.ERROR
+	var retCode = constant.ErrorCode.ERROR
 
 	if len(args) == 1 {
 		if c, ok := args[0].(*gin.Context); !ok {
-			panic("args should be gin.Context")
+			panic("gin.Context is required")
 		} else {
 			ctx = c
 		}
@@ -25,18 +25,18 @@ func SendErrJSON(msg string, args ...interface{}) {
 		if !ok {
 			panic("err code should be int")
 		}
-		errNo = eNo
+		retCode = eNo
 
 		c, ok := args[1].(*gin.Context)
 		if !ok {
-			panic("missing gin.Context")
+			panic("gin.Context is required")
 		}
 		ctx = c
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": errNo,
-		"msg": msg,
+	ctx.JSON(http.StatusBadRequest, gin.H{
+		"code": retCode,
+		"msg":  msg,
 		"data": gin.H{},
 	})
 
