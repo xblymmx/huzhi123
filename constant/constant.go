@@ -1,6 +1,6 @@
 package constant
 
-type errCode struct {
+type code struct {
 	SUCCESS      int
 	ERROR        int
 	NotFound     int
@@ -9,7 +9,7 @@ type errCode struct {
 	NotInActive  int // account not in active
 }
 
-var ErrorCode = errCode{
+var Code = code{
 	SUCCESS:      1,
 	ERROR:        2,
 	NotFound:     404,
@@ -18,22 +18,28 @@ var ErrorCode = errCode{
 	NotInActive:  1002,
 }
 
-type errorMsg struct {
+type msg struct {
 	// common
+	SUCCESS                  string
 	InvalidParameter         string
 	InvalidFileName          string
 	InvalidFileExtensionName string
 	InvalidMimeType          string
 
 	// gin
-	GinBindingError string
+	GinBindingError    string
+	GinContextRequired string
 
 	// category
 	InvalidCategoryParentID string
 	InvalidCategoryName     string
+	QueryCategoryError      string
+	UpdateCategoryError     string
+	CategoryNotExist        string
 }
 
-var ErrorMsg = errorMsg{
+var Msg = msg{
+	SUCCESS:                  "success",
 	InvalidParameter:         "parameter invalid",
 	GinBindingError:          "gin context binding and validation error",
 	InvalidCategoryParentID:  "invalid category parent id",
@@ -41,4 +47,8 @@ var ErrorMsg = errorMsg{
 	InvalidFileName:          "invalid file name",
 	InvalidFileExtensionName: "invalid file extension name",
 	InvalidMimeType:          "invalid mime type",
+	QueryCategoryError:       "query category error",
+	UpdateCategoryError:      "update category error",
+	CategoryNotExist:         "category not exists",
+	GinContextRequired:       "gin.Context is required",
 }

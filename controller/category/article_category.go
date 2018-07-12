@@ -7,13 +7,15 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/xblymmx/huzhi123/controller/common"
 	"github.com/xblymmx/huzhi123/constant"
+	"net/http"
 )
 
-func Save(c *gin.Context, isCreated bool) {
+func save(c *gin.Context, isCreated bool) {
 	var category model.Category
+	var err error
 
 	if err := c.ShouldBindJSON(&category); err != nil {
-		common.SendErrJSON(constant.ErrorMsg.GinBindingError, c)
+		common.SendErrJSON(constant.Msg.GinBindingError, http.StatusBadRequest, c)
 		return
 	}
 
@@ -21,7 +23,7 @@ func Save(c *gin.Context, isCreated bool) {
 	category.Name = strings.TrimSpace(category.Name)
 
 	if category.Name == "" {
-		common.SendErrJSON(constant.ErrorMsg.InvalidCategoryName, c)
+		common.SendErrJSON(constant.Msg.InvalidCategoryName, http.StatusBadRequest, c)
 	}
 
 	//if utf8.RuneCountInString(category.Name) > model.
@@ -29,15 +31,65 @@ func Save(c *gin.Context, isCreated bool) {
 	if category.ParentID != 0 {
 		var parentCategory model.Category
 		if err := model.DB.First(&parentCategory, category.ParentID).Error; err != nil {
-			common.SendErrJSON(constant.ErrorMsg.InvalidCategoryParentID, c)
+			common.SendErrJSON(constant.Msg.InvalidCategoryParentID, http.StatusInternalServerError, c)
 			return
 		}
 	}
 
-	//var newCategory model.Category
-	//if isCreated {
-	//	if err := model.DB.Create(&category).Error; err != nil {
-	//		common.SendErrJSON("error while create category", c)
-	//	}
-	//}
+	var toUpdateCate model.Category
+	if isCreated { // create new category
+		if err := model.DB.Create(&category).Error; err != nil {
+			common.SendErrJSON("error while create category", http.StatusInternalServerError, c)
+			return
+		}
+	} else { // update category
+		if err := model.DB.First(&toUpdateCate, category.ID).Error; err != nil {
+			common.SendErrJSON(constant.Msg.CategoryNotExist, http.StatusInternalServerError, c)
+			return
+		}
+		err = model.DB.Model(&toUpdateCate).Updates(&category).Error
+		if err != nil {
+			common.SendErrJSON(constant.Msg.UpdateCategoryError, http.StatusInternalServerError, c)
+			return
+		}
+	}
+
+	var categoryData model.Category
+	if isCreated {
+		categoryData = category
+	} else {
+		categoryData = toUpdateCate
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": constant.Code.SUCCESS,
+		"msg": constant.Msg.SUCCESS,
+		"data": categoryData,
+	})
+}
+
+func Create(c *gin.Context) {
+	save(c, true)
+}
+
+func Update(c *gin.Context) {
+	save(c, false)
+}
+
+func List(c *gin.Context) {
+	var categories []model.Category
+	var err error
+
+	err = model.DB.Order("sequence asc").Find(&categories).Error
+	if err != nil {
+		common.SendErrJSON(constant.Msg.QueryCategoryError, http.StatusInternalServerError, c)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": constant.Code.SUCCESS,
+		"msg": constant.Msg.SUCCESS,
+		"data": categories,
+	})
+
 }

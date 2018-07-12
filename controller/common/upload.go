@@ -70,12 +70,12 @@ func upload(ctx *gin.Context) (map[string]interface{}, error) {
 	index := strings.Index(filename, ".")
 
 	if index < 0 {
-		return nil, errors.New(constant.ErrorMsg.InvalidFileName)
+		return nil, errors.New(constant.Msg.InvalidFileName)
 	}
 
 	ext := filename[index:]
 	if len(ext) < 1 {
-		return nil, errors.New(constant.ErrorMsg.InvalidFileExtensionName)
+		return nil, errors.New(constant.Msg.InvalidFileExtensionName)
 	}
 
 	mimeType := mime.TypeByExtension(ext)
@@ -86,7 +86,7 @@ func upload(ctx *gin.Context) (map[string]interface{}, error) {
 	}
 
 	if mimeType == "" {
-		return nil, errors.New(constant.ErrorMsg.InvalidMimeType)
+		return nil, errors.New(constant.Msg.InvalidMimeType)
 	}
 
 	imageUploadInfo := GenerateImgUploadInfo(ext)
@@ -129,15 +129,15 @@ func UploadHandler(ctx *gin.Context) {
 	data, err := upload(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"code": constant.ErrorCode.ERROR,
+			"code": constant.Code.ERROR,
 			"msg": err.Error(),
 			data: gin.H{},
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
-		"code": constant.ErrorCode.SUCCESS,
-		"msg": "success",
+		"code": constant.Code.SUCCESS,
+		"msg": constant.Msg.SUCCESS,
 		"data": data,
 	})
 }

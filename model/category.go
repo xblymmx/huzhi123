@@ -7,7 +7,8 @@ type Category struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `sql:"index" json:"deletedAt"`
-	
-	Name string `json:"name"`
-	ParentID uint `json:"parent_id"`
+
+	Name     string `json:"name"`
+	Sequence int    `json:"sequence"` // sorting category if at the same level
+	ParentID uint   `json:"parent_id"`
 }
