@@ -13,7 +13,10 @@ var jsonData map[string]interface{}
 
 type serverConfig struct {
 	ENV string
+	APIPrefix string
 
+	// model
+	UserMaxAge int64
 
 	// image upload
 	UploadImgDir string

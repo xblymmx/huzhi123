@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/gin-gonic/gin"
+	"src/github.com/gin-gonic/gin"
 	"github.com/xblymmx/huzhi123/constant"
 )
 

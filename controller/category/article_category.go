@@ -4,10 +4,10 @@ import (
 	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/xblymmx/huzhi123/model"
-	"github.com/microcosm-cc/bluemonday"
-	"github.com/xblymmx/huzhi123/controller/common"
+	"github.com/xblymmx/huzhi123/common"
 	"github.com/xblymmx/huzhi123/constant"
 	"net/http"
+	"github.com/xblymmx/huzhi123/utils"
 )
 
 func save(c *gin.Context, isCreated bool) {
@@ -19,7 +19,7 @@ func save(c *gin.Context, isCreated bool) {
 		return
 	}
 
-	category.Name = bluemonday.UGCPolicy().Sanitize(category.Name)
+	category.Name = utils.AvoidXSS(category.Name)
 	category.Name = strings.TrimSpace(category.Name)
 
 	if category.Name == "" {
