@@ -8,20 +8,26 @@ import (
 	"github.com/xblymmx/huzhi123/utils"
 )
 
-
 var jsonData map[string]interface{}
 
 type serverConfig struct {
-	ENV string
+	ENV       string
 	APIPrefix string
+
+	// email
+	MailHost     string
+	MailUser     string
+	MailPassword string
+	MailFrom     string
+	MailPort     string
 
 	// model
 	UserMaxAge int64
 
 	// image upload
 	UploadImgDir string
-	ImgHost string
-	ImgPath string
+	ImgHost      string
+	ImgPath      string
 }
 
 var ServerConfig serverConfig
@@ -41,7 +47,6 @@ func initServer() {
 
 }
 
-
 func initJSON() {
 	b, err := ioutil.ReadFile("./config.json")
 	if err != nil {
@@ -56,16 +61,15 @@ func initJSON() {
 	}
 }
 
-
 type dbConfig struct {
-	Dialect      string
-	Database     string
-	User         string
-	Password     string
-	Host         string
-	Port         int
-	Charset      string
-	URL          string
+	Dialect     string
+	Database    string
+	User        string
+	Password    string
+	Host        string
+	Port        int
+	Charset     string
+	URL         string
 	MaxIdleConn int
 	MaxOpenConn int
 }
@@ -91,11 +95,11 @@ func initDB() {
 }
 
 type redisConfig struct {
-	Host string
-	Port int
-	Password string
-	URL string
-	MaxIdle int
+	Host      string
+	Port      int
+	Password  string
+	URL       string
+	MaxIdle   int
 	MaxActive int
 }
 

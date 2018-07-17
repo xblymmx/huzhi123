@@ -6,14 +6,14 @@ import (
 	"mime"
 	"fmt"
 	"os"
-	"src/github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	"github.com/xblymmx/huzhi123/config"
 	"unicode/utf8"
 	"github.com/xblymmx/huzhi123/utils"
-	"src/github.com/satori/go.uuid"
 	"github.com/xblymmx/huzhi123/model"
 	"net/http"
 	"github.com/xblymmx/huzhi123/constant"
+	"github.com/satori/go.uuid"
 )
 
 type ImageUploadInfo struct {
@@ -60,7 +60,7 @@ func GenerateImgUploadInfo(ext string) ImageUploadInfo {
 }
 
 func upload(ctx *gin.Context) (map[string]interface{}, error) {
-	file, err := ctx.FormFile("upload_file")
+	file, err := ctx.FormFile("upload")
 
 	if err != nil {
 		return nil, err
